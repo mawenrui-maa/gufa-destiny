@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>古法命盘系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 授权登录页面 -->
+    <div id="authPage" class="auth-page">
+        <div class="auth-container">
+            <h1>古法命盘系统</h1>
+            <p class="auth-desc">请输入授权注册码激活使用</p>
+            <input type="text" id="licenseKey" placeholder="请输入注册码" class="auth-input">
+            <button id="activateBtn" class="auth-btn">激活</button>
+            <p id="authError" class="auth-error"></p>
+            <div class="auth-tip">
+                <p>如果需要购买注册码，请把下面的设备ID发给卖家：</p>
+                <div class="device-id-box">
+                    <span id="deviceIdDisplay"></span>
+                    <button id="copyDeviceId" class="copy-btn">复制</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主应用页面 - 默认隐藏 -->
+    <div id="appPage" class="app-page" style="display: none;">
+        <div class="container">
+            <!-- 输入区域 -->
+            <section class="section">
+                <h2 class="section-title">出生信息</h2>
+                <div class="input-grid">
+                    <div class="input-row">
+                        <label>姓 名:</label>
+                        <input type="text" id="nameInput" value="命主" placeholder="输入姓名">
+                    </div>
+                    <div class="input-row">
+                        <label>农历年份:</label>
+                        <input type="number" id="yearInput" min="1900" max="2100" value="1986">
+                    </div>
+                    <div class="input-row">
+                        <label>月份:</label>
+                        <input type="number" id="monthInput" min="1" max="12" value="5">
+                    </div>
+                    <div class="input-row">
+                        <label>农历日期:</label>
+                        <input type="number" id="dayInput" min="1" max="30" value="13">
+                    </div>
+                    <div class="input-row">
+                        <label>时辰:</label>
+                        <input type="number" id="hourInput" min="0" max="23" value="11">
+                    </div>
+                    <div class="input-row">
+                        <label>性别:</label>
+                        <select id="genderInput">
+                            <option value="女">女</option>
+                            <option value="男">男</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-row">
+                    <button id="calculateBtn" class="btn primary-btn">排盘</button>
+                    <button id="resetBtn" class="btn">重置</button>
+                </div>
+                <div class="button-row test-buttons">
+                    <button class="btn test-btn" data-test="1">测试1</button>
+                    <button class="btn test-btn" data-test="2">测试2</button>
+                    <button class="btn test-btn" data-test="3">测试3</button>
+                </div>
+            </section>
+
+            <!-- 四柱命盘 -->
+            <section class="section">
+                <h2 class="section-title">四柱命盘</h2>
+                <p class="stem-display" id="stemDisplay">天干（年）: </p>
+                <div class="pillar-grid" id="pillarGrid">
+                    <!-- 动态生成 -->
+                </div>
+            </section>
+
+            <!-- 神煞分析 -->
+            <section class="section">
+                <h2 class="section-title">神煞分析</h2>
+                <div class="shensha-grid" id="shenshaGrid">
+                    <!-- 动态生成 -->
+                </div>
+            </section>
+
+            <!-- 大运与流年 -->
+            <section class="section">
+                <h2 class="section-title">大运与流年</h2>
+                <p class="sub-title">大运（点击查看流年）:</p>
+                <div class="dayun-scroll-container">
+                    <div class="dayun-container" id="dayunContainer">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+                <div class="liunian-section">
+                    <p class="sub-title">流年:</p>
+                    <div class="liunian-grid" id="liunianGrid">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 十二宫时钟 -->
+            <section class="section">
+                <h2 class="section-title">十二宫时钟</h2>
+                <div class="clock-container">
+                    <canvas id="clockCanvas" width="280" height="280"></canvas>
+                </div>
+            </section>
+
+            <!-- 收藏功能 -->
+            <section class="section">
+                <h2 class="section-title">收藏功能</h2>
+                <div class="button-row">
+                    <button id="collectBtn" class="btn collect-btn">收藏当前命盘</button>
+                    <button id="showCollectionsBtn" class="btn view-btn">查看收藏</button>
+                    <button id="clearCollectionsBtn" class="btn clear-btn">清空收藏</button>
+                </div>
+                <p class="collection-info" id="collectionInfo">已收藏: 0 个命盘</p>
+            </section>
+
+            <!-- 状态栏 -->
+            <div class="status-bar" id="statusBar">准备排盘 - 请输入出生信息</div>
+        </div>
+    </div>
+
+    <!-- 收藏列表弹窗 -->
+    <div id="collectionModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>收藏管理</h3>
+                <span class="close-btn" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body" id="collectionList">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="ancient_destiny.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // 确保DOM加载完成后再绑定事件
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+        });
+    </script>
+</body>
+</html>
